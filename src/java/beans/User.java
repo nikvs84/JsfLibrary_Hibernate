@@ -50,7 +50,7 @@ public class User implements Serializable {
     public String logIn() {
         
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException ex) {
             Logger.getLogger(User.class.getName()).log(Level.SEVERE, null, ex);
         }        

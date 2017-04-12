@@ -5,7 +5,9 @@
  */
 package controllers;
 
-import beans.Genre;
+//import beans.Genre;
+import db.DataHelper;
+import entity.Genre;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,12 +18,15 @@ import java.util.logging.Logger;
  *
  * @author Admin
  */
-public class GenreController extends EntityList<Genre>{
+public class GenreController /*extends EntityList<Genre>*/{
     private ArrayList<Genre> genreList;
+    DataHelper dataHelper = DataHelper.getInstance();
     
     public ArrayList<Genre> getGenreList() {
-        if (genreList == null)
-            genreList = getList("genre", "", "name", "*");
+        if (genreList == null) {
+//            genreList = getList("genre", "", "name", "*");
+            genreList = (ArrayList<Genre>) dataHelper.getGenres();
+        }
         return genreList;
     }
 
@@ -31,7 +36,7 @@ public class GenreController extends EntityList<Genre>{
     public GenreController() {
     }
 
-    @Override
+/*    @Override
     public Genre getNewInstance(ResultSet resultSet) {
         Genre genre = new Genre();
         
@@ -48,5 +53,6 @@ public class GenreController extends EntityList<Genre>{
         return genre;
 
     }
-    
+*/
+
 }

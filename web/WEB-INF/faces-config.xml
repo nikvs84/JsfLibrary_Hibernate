@@ -67,4 +67,5 @@
         <managed-bean-class>controllers.SearchTypeController</managed-bean-class>
         <managed-bean-scope>request</managed-bean-scope>
     </managed-bean>
+    
 </faces-config>
