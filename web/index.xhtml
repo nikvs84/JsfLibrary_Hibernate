@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>#{msg.welcome_title}</title>
+        <h:outputStylesheet library="css" name="style_index.css" />
+        <h:outputScript library="js" name="library.js" target="head" />
+        <link rel="shortcut icon" href="resources/images/biblioteka2.png" />
+    </h:head>
+    <h:body>
+
+        <f:view locale="#{localeChanger.locale}">
+            <div class="main">
+                <div class="content">
+                    <p class="title"><h:graphicImage library="images" name="main-logo.gif" alt="main-logo"/></p>
+                    <p class="title"><h:outputText id="index_title" value="#{msg.index_title}" /></p>
+                </div>
+                <h:panelGroup id ="login_div" class="login_div" layout="block" >
+                    <p class="title">#{msg.input_info}</p>
+                    <h:form styleClass="login_form" id="login_form">
+                        <table class="login_table" >
+                            <tr>
+                                <td>#{msg.input_name}:</td>
+                                <td>
+                                    <h:inputText id="userName" value="#{user.userName}" required="true" requiredMessage="#{msg.login_required}">
+                                        <f:validator validatorId="beans.validators.LoginValidator" />
+                                        <f:ajax event="keyup" render="username_input wrong_login_password" />
+                                    </h:inputText>
+                                </td>
+                                <td rowspan="3" class="loading_image">
+                                    <h:graphicImage id="loading_image" library="images" name="loading_blue_lg.gif" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#{msg.input_password}:</td>
+                                <td>
+                                    <h:inputSecret id="password" value="#{user.password}" required="true" requiredMessage="#{msg.password_required}" redisplay="true" >
+                                        <f:ajax event="keyup" render="loginError wrong_login_password" />
+                                    </h:inputSecret>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <h:commandButton action="#{user.logIn()}" value="#{msg.entry}" onclick="return showLoadingImage();"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" >
+                                    <p><h:message id="loginError" for="password" styleClass="error" /></p>
+                                    <p><h:message id="username_input" for="userName" styleClass="error" /></p>
+                                    <p><h:message id="wrong_login_password" for="login_form" styleClass="error" /></p>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                    </h:form>
+                    
+                </h:panelGroup>
+                <div class="footer">
+                    <p>#{msg.author_info}</p>
+                </div>
+                
+                <ui:include src="/templates/locales.xhtml" />
+            </div>
+
+            <noscript>
+                <p>JavaScript отключен в браузере!</p>
+                <style type="text/css">
+                    .main {
+                        display: none;
+                    }
+                    p {
+                        text-align: center;
+                    }
+                </style>
+            </noscript>
+        </f:view>
+    </h:body>
+</html>
+
