@@ -18,7 +18,6 @@ public class Genre  implements java.io.Serializable {
     public Genre() {
     }
 
-	
     public Genre(String name) {
         this.name = name;
     }

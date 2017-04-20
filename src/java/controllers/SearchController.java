@@ -353,7 +353,7 @@ public class SearchController implements Serializable {
     }
 
     public byte[] getImage(long id) {
-        for (Book book : currentBookList) {
+        for (entity.Book book : currentList) {
             if (book.getId() == id) {
                 return book.getImage();
             }

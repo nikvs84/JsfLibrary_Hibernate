@@ -42,7 +42,7 @@
                         </h:commandButton>
                     </h:panelGroup>
                     
-                    <h:dataTable id="booksList" value="#{searchController.currentBookList}" var="book" styleClass="book_preview" columnClasses="col1, col2, col3, col4" rowClasses="row1, row2">
+                    <h:dataTable id="booksList" value="#{searchController.currentList}" var="book" styleClass="book_preview" columnClasses="col1, col2, col3, col4" rowClasses="row1, row2">
                         <h:column>
                             <h:outputLink value="#{facesContext.externalContext.applicationContextPath}/PdfContent" >
                                 <f:param name="index" value="#{book.id}" />
@@ -53,16 +53,16 @@
                             <div>
                                 <p><a href="#{facesContext.externalContext.applicationContextPath}/PdfContent?index=#{book.id}">#{book.name}</a></p>
                                 <p>
-                                    <strong>#{msg.author_name}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.author}" />
-                                    <br /><h:inputText rendered="#{searchController.editMode and book.edit}" value="#{book.author}" />
+                                    <strong>#{msg.author_name}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.author.fio}" />
+                                    <br /><h:inputText rendered="#{searchController.editMode and book.edit}" value="#{book.author.fio}" />
                                 </p>
                                 <p>
                                     <strong>#{msg.page_count}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.pageCount} #{msg.pages}" />
                                     <br /><h:inputText rendered="#{searchController.editMode and book.edit}" value="#{book.pageCount}" />
                                 </p>
                                 <p>
-                                    <strong>#{msg.publisher}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.publisher}" />
-                                    <br /><h:inputText rendered="#{searchController.editMode and book.edit}" value="#{book.publisher}" />
+                                    <strong>#{msg.publisher}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.publisher.name}" />
+                                    <br /><h:inputText rendered="#{searchController.editMode and book.edit}" value="#{book.publisher.name}" />
                                 </p>
                                 <p>
                                     <strong>#{msg.publish_year}: </strong><h:outputText rendered="#{!searchController.editMode || !book.edit}" value="#{book.publishYear}" />
@@ -91,8 +91,8 @@
                             <div class="book_details">
                                 <p><strong>#{msg.descr}</strong></p>
                                 <p>
-                                    <h:panelGroup rendered="#{!searchController.editMode || !book.edit}" >#{book.description}</h:panelGroup>
-                                    <h:inputTextarea rendered="#{searchController.editMode and book.edit}" value="#{book.description}" rows="15" cols="50" />
+                                    <h:panelGroup rendered="#{!searchController.editMode || !book.edit}" >#{book.descr}</h:panelGroup>
+                                    <h:inputTextarea rendered="#{searchController.editMode and book.edit}" value="#{book.descr}" rows="15" cols="50" />
                                 </p>
                             </div>
                         </h:column>
