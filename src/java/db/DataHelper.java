@@ -72,30 +72,62 @@ public class DataHelper {
     }
     
     public ArrayList<Book> getBooksByGenres(long id, int ... limits) {
-        Criteria criteria = getBookCriteria(limits);
-        criteria.createAlias("book.genre_id", "genre");
+        Criteria criteria = getSession().createCriteria(Book.class);
+//        criteria.createAlias("genre", "genre");
         Criterion criterion = Restrictions.eq("genre.id", id);
         criteria.add(criterion);
+        
+        setTotal(getTotal(criteria));
+        System.out.println("total = " + this.getTotal());
         
         currentCriteria = DetachedCriteria.forClass(Book.class);
         currentCriteria.add(criterion);
         
-        return (ArrayList<Book>) getBookCriteria(limits).add(criterion).list();
+        runCurrentCriteria(limits);
+        
+        return this.currentBookList;
     }
     
     public ArrayList<Book> getBooksByLetter (String letter, int ... limits) {
-        return (ArrayList<Book>) getBookCriteria(limits).add(Restrictions.ilike("name", letter, MatchMode.START));
+        Criteria criteria = getSession().createCriteria(Book.class);
+        Criterion criterion = Restrictions.ilike("name", letter, MatchMode.START);
+        criteria.add(criterion);
+        
+        setTotal(getTotal(criteria));
+        
+        currentCriteria = DetachedCriteria.forClass(Book.class);
+        currentCriteria.add(criterion);
+        
+        runCurrentCriteria(limits);
+        return this.currentBookList;
     }
     
     public ArrayList<Book> getBooksBySearch (String search, SearchType searchType, int ... limits) {
-        ArrayList<Book> result = new ArrayList<>();
+        Criteria criteria = getSession().createCriteria(Book.class, "book");
+        Criterion criterion;
         
-        if (searchType.equals(SearchType.AUTHOR)) {
-            result = (ArrayList<Book>) getBookCriteria(limits).add(Restrictions.like("author.name", search, MatchMode.ANYWHERE));
-        } else if (searchType.equals(SearchType.TITLE)) {
-            result = (ArrayList<Book>) getBookCriteria(limits).add(Restrictions.like("name", search, MatchMode.ANYWHERE));
+        switch (searchType) {
+            case AUTHOR:
+                criteria.createAlias("book.author", "author");
+                criterion = Restrictions.ilike("author.fio", search, MatchMode.ANYWHERE);
+                break;
+            case TITLE:
+                criterion = Restrictions.ilike("name", search, MatchMode.ANYWHERE);
+                break;
+            default:
+                criterion = null;
         }
-        return result;
+        
+        criteria.add(criterion);
+        
+        setTotal(getTotal(criteria));
+        
+        currentCriteria = DetachedCriteria.forClass(Book.class, "book").createAlias("book.author", "author");
+        currentCriteria.add(criterion);
+        
+        runCurrentCriteria(limits);
+        
+        return this.currentBookList;
     }
 
 // Utils -----------------------------------------------------------------------    
@@ -107,7 +139,9 @@ public class DataHelper {
     }
     
     private int getTotal(Criteria criteria) {
-        return ((Long) criteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+        criteria.setProjection(Projections.rowCount());
+        Long rowCount = (Long) criteria.uniqueResult();
+        return rowCount.intValue();
     }
     
     private Criteria getBookCriteria(int ... limits) {

@@ -104,6 +104,12 @@
                             </div>
                         </h:column>
                     </h:dataTable>
+                    DATATABLE_2
+                    <h:dataTable id="testBooksList" value="#{searchController.currentList}" var="b" >
+                        <h:column>
+                            <h:outputText value="book.name: #{b.name}" />
+                        </h:column>
+                    </h:dataTable>
                 </h:form>
             </ui:define>
             <ui:define name="paginator">

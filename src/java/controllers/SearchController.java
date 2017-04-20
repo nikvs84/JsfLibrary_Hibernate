@@ -6,6 +6,7 @@
 package controllers;
 
 import beans.Book;
+import db.DataHelper;
 import enums.SearchType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ import javax.faces.context.FacesContext;
 public class SearchController implements Serializable {
 
     private ArrayList<Book> currentBookList;
+    private ArrayList<entity.Book> currentList;
     private Books books = new Books();
+    private DataHelper dataHelper = DataHelper.getInstance();
 
     private SearchType searchType;
     private String searchString;
@@ -69,7 +72,7 @@ public class SearchController implements Serializable {
     private String lastLetter;
     private String lastSearchString;
 
-    private boolean isCountOnPaggeChanged;
+    private boolean isCountOnPageChanged;
 
     private boolean editMode = false;
 
@@ -128,7 +131,8 @@ public class SearchController implements Serializable {
     }
 
     public int getTotalBookCount() {
-        this.totalBookCount = books.getLastRowCount();
+//        this.totalBookCount = books.getLastRowCount();
+        this.totalBookCount = dataHelper.getTotal();
         return totalBookCount;
     }
 
@@ -139,6 +143,10 @@ public class SearchController implements Serializable {
 
     public ArrayList<Book> getCurrentBookList() {
         return currentBookList;
+    }
+
+    public ArrayList<entity.Book> getCurrentList() {
+        return currentList;
     }
 
     public Integer[] getPageNumbers() {
@@ -282,9 +290,11 @@ public class SearchController implements Serializable {
 
         setSelectedGenreId(id);
 
-        this.currentBookList = books.getBooksByGenre(id, getLimits());
+//        this.currentBookList = books.getBooksByGenre(id, getLimits());
+        this.currentList = dataHelper.getBooksByGenres(id, getLimits());
 
-        setTotalBookCount(books.getLastRowCount());
+//        setTotalBookCount(books.getLastRowCount());
+        setTotalBookCount(dataHelper.getTotal());
 
         this.setPageNumbers();
 
@@ -300,9 +310,10 @@ public class SearchController implements Serializable {
 
         setSelectedLetter(letter.charAt(0));
 
-        this.currentBookList = books.getBooksByLetter(letter, getLimits());
-
-        setTotalBookCount(books.getLastRowCount());
+//        this.currentBookList = books.getBooksByLetter(letter, getLimits());
+        this.currentList = dataHelper.getBooksByLetter(letter, getLimits());
+//        setTotalBookCount(books.getLastRowCount());
+        setTotalBookCount(dataHelper.getTotal());
 
         this.setPageNumbers();
 
@@ -317,10 +328,12 @@ public class SearchController implements Serializable {
         if (getLastSearchString() == null || "".equals(getLastSearchString())) {
             fillBooksAll();
         } else {
-            this.currentBookList = books.getBooksBySearch(searchString, searchType, getLimits());
+//            this.currentBookList = books.getBooksBySearch(searchString, searchType, getLimits());
+            this.currentList = dataHelper.getBooksBySearch(searchString, searchType, getLimits());
         }
 
-        setTotalBookCount(books.getLastRowCount());
+//        setTotalBookCount(books.getLastRowCount());
+        setTotalBookCount(dataHelper.getTotal());
 
         SearchController.this.setPageNumbers();
 
@@ -353,7 +366,7 @@ public class SearchController implements Serializable {
 
         pause();
 
-        if (getParams().get("page_number") == null || this.isCountOnPaggeChanged) {
+        if (getParams().get("page_number") == null || this.isCountOnPageChanged) {
             this.selectedPageNumber = getPageNumber();
         } else {
             this.selectedPageNumber = Integer.valueOf(getParams().get("page_number"));
@@ -405,13 +418,13 @@ public class SearchController implements Serializable {
         }
 
         setPageNumbers();
-        this.isCountOnPaggeChanged = true;
+        this.isCountOnPageChanged = true;
         selectPage();
     }
 
     private int getPageNumber() {
 
-        this.isCountOnPaggeChanged = false;
+        this.isCountOnPageChanged = false;
 
         int result = 1;
         int currentTopBook = 1;
